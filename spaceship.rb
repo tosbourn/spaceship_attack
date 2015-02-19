@@ -1,14 +1,11 @@
 module World
   GRAVITATIONAL_ACCELERTION = 9.81 ** 2
   MAX_POSITION = 20
+  MIN_POSITION = 2
 
   def World.trajectory(alpha, velocity)
     #(2 * Math.cos(alpha) * Math.sin(alpha) * (velocity ** 2)) / GRAVITATIONAL_ACCELERTION
     alpha % 10
-  end
-
-  def World.max_position
-    MAX_POSITION
   end
 end
 
@@ -43,9 +40,12 @@ class Alien
   end
 
   def move
-    @position = (rand(0..1) % 2) ? @position - 1 : @position + 1
+    @position = (rand(1..2) % 2 == 0) ? @position - 1 : @position + 1
     if @position > World::MAX_POSITION
       @position = World::MAX_POSITION
+    end
+    if @position < World::MIN_POSITION
+      @position = World::MIN_POSITION
     end
   end
 
@@ -73,6 +73,11 @@ class Game
       else
         puts "We missed and the Alien is moving!"
         puts "We hit #{@spaceship.fire} and our scanners can see the Alien was at #{@alien.position}"
+        landscape = ["🚀"]
+        19.times { landscape << "_" }
+        landscape[@spaceship.fire] = "🔥"
+        landscape[@alien.position] = "👾"
+        puts landscape.join
         @alien.move
       end
     end
